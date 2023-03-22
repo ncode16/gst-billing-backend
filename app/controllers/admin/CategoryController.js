@@ -124,7 +124,7 @@ exports.activeInactiveCategory = async (req, res) => {
 
 exports.listCategory = async (req, res) => {
     try {
-        let resultCategory = await pool.query('SELECT * FROM category_master')
+        let resultCategory = await pool.query('SELECT * FROM category_master WHERE is_deleted = $1', [false])
         return res.status(200).json({
             success: true,
             data: resultCategory.rows,

@@ -38,6 +38,28 @@ exports.createAdmin = async (req, res) => {
     }
 }
 
+exports.addUser = async (req, res) => {
+    try {
+        let sql = `INSERT INTO user_master (first_name, last_name, email, mobile_number) VALUES ($1, $2, $3, $4) RETURNING *`
+
+        let result = await pool.query(sql, [
+            req.body.first_name,
+            req.body.last_name,
+            req.body.email,
+            req.body.mobile_number,
+        ])
+
+        return res.json({
+            statusCode: 200,
+            success: true,
+            data: result.rows[0],
+            message: 'User Added Successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
 exports.adminLogin = async (req, res) => {
     try {
         let users = await pool.query('SELECT * FROM admin_master WHERE email = $1', [req.body.email])
