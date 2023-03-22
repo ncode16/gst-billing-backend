@@ -1,0 +1,34 @@
+.contactTitle{
+    padding: 5px 0 30px;
+}
+
+.contactTitleContainer{
+    width: 100vw;
+    height: fit-content;
+    padding: 0 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.contactTitle{
+    color: #1d1d1f;
+    font-weight: bold;
+    font-size: 45px;
+}
+
+.contactSubTitleContainer{
+    font-size: 27px;
+    font-weight: 600;
+    flex-direction: column;
+}
+
+.contactSubTitles{
+    width: 100vw;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: #333;
+}

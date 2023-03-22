@@ -13,12 +13,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 //     next()
 // })
 
-const reactBuildPath = path.join(__dirname, 'build')
-app.use(express.static(reactBuildPath))
+// const reactBuildPath = path.join(__dirname, 'build')
+// app.use(express.static(reactBuildPath))
 
-app.get("*", (req, res) => {
-    res.sendFile(reactBuildPath)
-})
+// app.get("*", (req, res) => {
+//     res.sendFile(reactBuildPath)
+// })
 
 // Define Routes
 const adminRoute = require('./app/routes/admin')
