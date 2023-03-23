@@ -49,7 +49,7 @@ exports.getAllTutorial = async (req, res) => {
 
 exports.editTutorial = async (req, res) => {
     try {
-        let resultTutorial = await pool.query('SELECT * FROM tutorial_master WHERE tutorial_id = $1', [req.params.tutorialId])
+        let resultTutorial = await pool.query('SELECT * FROM tutorial_master LEFT JOIN category_master ON category_master.category_id = tutorial_master.category_id WHERE tutorial_master.tutorial_id = $1', [req.params.tutorialId])
         return res.json({
             statusCode: 200,
             success: true,
