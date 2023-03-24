@@ -136,7 +136,7 @@ exports.getFaqAndFeatureList = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
     try {
-        let resultUser = await pool.query('SELECT * FROM user_master WHERE is_deleted = $1 ORDER BY user_id', [false])
+        let resultUser = await pool.query('SELECT * FROM user_master WHERE is_deleted = $1 ORDER BY user_id DESC', [false])
         let finalResultUser = await Pagination.paginator(resultUser.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

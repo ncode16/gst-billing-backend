@@ -33,7 +33,7 @@ exports.createFeature = async (req, res) => {
 
 exports.getAllFeature = async (req, res) => {
     try {
-        let resultFeature = await pool.query('SELECT * FROM feature_master WHERE is_deleted = $1 ORDER BY feature_id', [false])
+        let resultFeature = await pool.query('SELECT * FROM feature_master WHERE is_deleted = $1 ORDER BY feature_id DESC', [false])
         let finalResultFeature = await Pagination.paginator(resultFeature.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

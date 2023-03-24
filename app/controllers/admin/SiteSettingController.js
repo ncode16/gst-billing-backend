@@ -33,7 +33,7 @@ exports.createSiteSetting = async (req, res) => {
 
 exports.getAllSiteSetting = async (req, res) => {
     try {
-        let resultSiteSetting = await pool.query('SELECT * FROM site_setting_master WHERE is_deleted = $1 ORDER BY site_setting_id', [false])
+        let resultSiteSetting = await pool.query('SELECT * FROM site_setting_master WHERE is_deleted = $1 ORDER BY site_setting_id DESC', [false])
         let finalResultSiteSetting = await Pagination.paginator(resultSiteSetting.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

@@ -34,7 +34,7 @@ exports.createTemplate = async (req, res) => {
 
 exports.getAllTemplate = async (req, res) => {
     try {
-        let resultTemplate = await pool.query('SELECT * FROM template_master WHERE is_deleted = $1 ORDER BY template_id', [false])
+        let resultTemplate = await pool.query('SELECT * FROM template_master WHERE is_deleted = $1 ORDER BY template_id DESC', [false])
         let array = []
         resultTemplate.rows.forEach((item) => {
             let data = {

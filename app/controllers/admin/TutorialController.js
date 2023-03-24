@@ -34,7 +34,7 @@ exports.createTutorial = async (req, res) => {
 
 exports.getAllTutorial = async (req, res) => {
     try {
-        let resultTutorial = await pool.query('SELECT * FROM tutorial_master WHERE is_deleted = $1 ORDER BY tutorial_id', [false])
+        let resultTutorial = await pool.query('SELECT * FROM tutorial_master WHERE is_deleted = $1 ORDER BY tutorial_id DESC', [false])
         let finalResultTutorial = await Pagination.paginator(resultTutorial.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

@@ -33,7 +33,7 @@ exports.createCategory = async (req, res) => {
 
 exports.getAllCategory = async (req, res) => {
     try {
-        let resultCategory = await pool.query('SELECT * FROM category_master WHERE is_deleted = $1 ORDER BY category_id', [false])
+        let resultCategory = await pool.query('SELECT * FROM category_master WHERE is_deleted = $1 ORDER BY category_id DESC', [false])
         let finalResultCategory = await Pagination.paginator(resultCategory.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

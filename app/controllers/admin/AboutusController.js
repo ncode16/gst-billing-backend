@@ -34,7 +34,7 @@ exports.createAboutus = async (req, res) => {
 
 exports.getAllAboutus = async (req, res) => {
     try {
-        let resultAboutUs = await pool.query('SELECT * FROM aboutus_master WHERE is_deleted = $1 ORDER BY aboutus_id', [false])
+        let resultAboutUs = await pool.query('SELECT * FROM aboutus_master WHERE is_deleted = $1 ORDER BY aboutus_id DESC', [false])
         let finalResultAboutUs = await Pagination.paginator(resultAboutUs.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

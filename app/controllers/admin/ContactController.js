@@ -14,7 +14,7 @@ let transporter = nodemailer.createTransport({
 
 exports.getAllUserContact = async (req, res) => {
     try {
-        let resultContact = await pool.query('SELECT * FROM contact_master WHERE is_deleted = $1 ORDER BY contact_id', [false])
+        let resultContact = await pool.query('SELECT * FROM contact_master WHERE is_deleted = $1 ORDER BY contact_id DESC', [false])
         let finalResultContact = await Pagination.paginator(resultContact.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,

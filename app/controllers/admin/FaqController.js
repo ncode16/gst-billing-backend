@@ -34,7 +34,7 @@ exports.createFaq = async (req, res) => {
 
 exports.getAllFaq = async (req, res) => {
     try {
-        let resultFaq = await pool.query('SELECT * FROM faq_master WHERE is_deleted = $1 ORDER BY faq_id', [false])
+        let resultFaq = await pool.query('SELECT * FROM faq_master WHERE is_deleted = $1 ORDER BY faq_id DESC', [false])
         let finalResultFaq = await Pagination.paginator(resultFaq.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,
