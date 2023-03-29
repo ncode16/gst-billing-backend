@@ -124,3 +124,16 @@ exports.activeInactiveAboutus = async (req, res) => {
         console.log('error', error)
     }
 }
+
+exports.listAboutus = async (req, res) => {
+    try {
+        let resultAboutUs = await pool.query('SELECT * FROM aboutus_master WHERE is_deleted = $1', [false])
+        return res.status(200).json({
+            success: true,
+            data: resultAboutUs.rows,
+            message: 'Data Retrived Successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
+    }
+}

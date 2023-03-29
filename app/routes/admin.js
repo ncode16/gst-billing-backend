@@ -112,5 +112,6 @@ router.get('/edit/about-us/:aboutUsId', tokenValidate(), AboutusController.editA
 router.post('/update/about-us/:aboutUsId', tokenValidate(), AboutusController.updateAboutus)
 router.post('/delete/about-us/:aboutUsId', tokenValidate(), AboutusController.deleteAboutus)
 router.post('/active-inactive/about-us/:aboutUsId', tokenValidate(), AboutusController.activeInactiveAboutus)
+router.get('/list/about-us', AboutusController.listAboutus)
 
 module.exports = router

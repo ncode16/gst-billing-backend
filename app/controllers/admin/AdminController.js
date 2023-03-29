@@ -6,6 +6,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport')
 const nodemailer = require('nodemailer')
 const randomString = require('randomstring')
 const UserService = require('../../services/UserService')
+const { Validator } = require('node-input-validator')
 
 const transporter = nodemailer.createTransport(
     sendgridTransport({
@@ -40,6 +41,18 @@ exports.createAdmin = async (req, res) => {
 
 exports.addUser = async (req, res) => {
     try {
+        let v = new Validator(req.body, {
+            mobile_number: 'required',
+        })
+
+        let matched = await v.check()
+        if (!matched) {
+            return res.json({
+                statusCode: 400,
+                success: false,
+                message: v.errors
+            })
+        }
         let sql = `INSERT INTO user_master (first_name, last_name, email, mobile_number) VALUES ($1, $2, $3, $4) RETURNING *`
 
         let result = await pool.query(sql, [
