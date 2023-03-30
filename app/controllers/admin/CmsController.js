@@ -18,7 +18,6 @@ exports.createCms = async (req, res) => {
                 message: v.errors
             })
         }
-
         let result = await CmsService.createCms(req.body.cms_title, req.body.cms_description, req.file.filename)
 
         return res.json({
@@ -35,7 +34,19 @@ exports.createCms = async (req, res) => {
 exports.getAllCms = async (req, res) => {
     try {
         let resultCms = await pool.query('SELECT * FROM cms_master WHERE is_deleted = $1 ORDER BY cms_id DESC', [false])
-        let finalResultCms = await Pagination.paginator(resultCms.rows, req.body.page, req.body.limit)
+        let cms = []
+        resultCms.rows.forEach((item) => {
+            let data = {
+                cms_id: item.cms_id,
+                cms_title: item.cms_title,
+                cms_description: item.cms_description,
+                cms_image: process.env.CMS_IMAGE_URL + item.cms_image,
+                is_active: item.is_active,
+                is_deleted: item.is_deleted,
+            }
+            return cms.push(data)
+        })
+        let finalResultCms = await Pagination.paginator(cms, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,
             success: true,
@@ -50,10 +61,18 @@ exports.getAllCms = async (req, res) => {
 exports.editCms = async (req, res) => {
     try {
         let resultCms = await pool.query('SELECT * FROM cms_master WHERE cms_id = $1', [req.params.cmsId])
+        let finalCmsData = {
+            cms_id: resultCms.rows[0].cms_id,
+            cms_title: resultCms.rows[0].cms_title,
+            cms_description: resultCms.rows[0].cms_description,
+            cms_image: process.env.CMS_IMAGE_URL + resultCms.rows[0].cms_image,
+            is_active: resultCms.rows[0].is_active,
+            is_deleted: resultCms.rows[0].is_deleted,
+        }
         return res.json({
             statusCode: 200,
             success: true,
-            data: resultCms.rows[0],
+            data: finalCmsData,
             message: 'Data Retrived Successfully'
         })
     } catch (error) {

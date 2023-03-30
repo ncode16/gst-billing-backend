@@ -55,22 +55,19 @@ exports.listTemplate = async (req, res) => {
 
 exports.listCms = async (req, res) => {
     try {
-        let resultCms = await pool.query('SELECT * FROM cms_master WHERE is_deleted = $1 and is_active = $2', [false, true])
-        let cms = []
-        resultCms.rows.forEach((item) => {
-            let data = {
-                cms_title: item.cms_title,
-                cms_description: item.cms_description,
-                cms_image: process.env.CMS_IMAGE_URL + item.cms_image,
-                is_active: item.is_active,
-                is_deleted: item.is_deleted,
-            }
-            return cms.push(data)
-        })
+        let resultCms = await pool.query('SELECT * FROM cms_master WHERE cms_id = $1', [req.params.cmsId])
+        let finalCmsData = {
+            cms_id: resultCms.rows[0].cms_id,
+            cms_title: resultCms.rows[0].cms_title,
+            cms_description: resultCms.rows[0].cms_description,
+            cms_image: process.env.CMS_IMAGE_URL + resultCms.rows[0].cms_image,
+            is_active: resultCms.rows[0].is_active,
+            is_deleted: resultCms.rows[0].is_deleted,
+        }
         return res.json({
             statusCode: 200,
             success: true,
-            data: cms,
+            data: finalCmsData,
             message: 'Data Retrived Successfully'
         })
     } catch (error) {

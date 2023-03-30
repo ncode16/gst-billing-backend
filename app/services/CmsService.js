@@ -5,11 +5,11 @@ module.exports = class CmsService {
         try {
             let sql = `INSERT INTO cms_master (cms_title, cms_description, cms_image) VALUES ($1, $2, $3) RETURNING *`
 
-        let result = await pool.query(sql, [
-            cmsTitle,
-            cmsDescription,
-            cmsImage
-        ])
+            let result = await pool.query(sql, [
+                cmsTitle,
+                cmsDescription,
+                cmsImage
+            ])
             return result
         } catch (error) {
             console.log('error', error)

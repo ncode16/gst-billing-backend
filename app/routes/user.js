@@ -26,7 +26,7 @@ router.post('/user/add-contact', ContactUsController.createUserContact)
 router.get('/list/feature', HomePageController.listFeature)
 router.get('/list/faq', HomePageController.listFaq)
 router.get('/list/template', HomePageController.listTemplate)
-router.get('/list/cms', HomePageController.listCms)
+router.get('/list/cms/:cmsId', HomePageController.listCms)
 
 // User Document API's
 router.post('/update/document-setting/:documentId', tokencheck(), DocumentSettingController.updateDocument)

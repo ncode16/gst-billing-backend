@@ -23,8 +23,7 @@ let storage = multer.diskStorage({
 
 let upload = multer({ storage: storage })
 
-// Upload CMS Image
-let cmsStorage = multer.diskStorage({
+let storageCms = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/cms')
     },
@@ -46,7 +45,7 @@ let cmsStorage = multer.diskStorage({
     }
 })
 
-let uploadCms = multer({ storage: cmsStorage })
+let uploadCms = multer({ storage: storageCms })
 
 const tokenValidate = require("../../middleware/tokencheck")
 
