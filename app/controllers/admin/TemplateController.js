@@ -93,6 +93,7 @@ exports.updateTemplate = async (req, res) => {
                 message: v.errors
             })
         }
+        req.body.template_image = req.file.filename
         let query = await TemplateService.updateTemplate(req.params.templateId, req.body)
         let colValues = Object.keys(req.body).map((key) => {
             return req.body[key];

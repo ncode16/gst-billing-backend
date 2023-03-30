@@ -4,7 +4,7 @@ const multer = require('multer')
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "./public/template")
+        cb(null, './public/template')
     },
     filename: (req, file, cb) => {
         let fileType = ''
@@ -23,6 +23,31 @@ let storage = multer.diskStorage({
 
 let upload = multer({ storage: storage })
 
+// Upload CMS Image
+let cmsStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/cms')
+    },
+    filename: (req, file, cb) => {
+        let fileType = ''
+        if (file.mimetype === "image/png") {
+            fileType = "png"
+        }
+        if (file.mimetype === "image/jpg") {
+            fileType = "jpg"
+        }
+        if (file.mimetype === "image/jpeg") {
+            fileType = "jpeg"
+        }
+        if (file.mimetype === "image/webp") {
+            fileType = "webp"
+        }
+        cb(null, "image-" + Date.now() + "." + fileType)
+    }
+})
+
+let uploadCms = multer({ storage: cmsStorage })
+
 const tokenValidate = require("../../middleware/tokencheck")
 
 const FeatureController = require('../controllers/admin/FeatureController')
@@ -33,7 +58,7 @@ const TutorialController = require('../controllers/admin/TutorialController')
 const TemplateController = require('../controllers/admin/TemplateController')
 const CategoryController = require('../controllers/admin/CategoryController')
 const SiteSettingController = require('../controllers/admin/SiteSettingController')
-const AboutusController = require('../controllers/admin/AboutusController')
+const CmsController = require('../controllers/admin/CmsController')
 
 // Admin Feature API's
 router.post('/create/feature', tokenValidate(), FeatureController.createFeature)
@@ -105,13 +130,12 @@ router.post('/update/site/:siteSettingId', tokenValidate(), SiteSettingControlle
 router.post('/delete/site/:siteSettingId', tokenValidate(), SiteSettingController.deleteSiteSetting)
 router.post('/active-inactive/site/:siteSettingId', tokenValidate(), SiteSettingController.activeInactiveSiteSetting)
 
-// Admin About us API's
-router.post('/create/about-us', tokenValidate(), AboutusController.createAboutus)
-router.post('/about-us', tokenValidate(), AboutusController.getAllAboutus)
-router.get('/edit/about-us/:aboutUsId', tokenValidate(), AboutusController.editAboutus)
-router.post('/update/about-us/:aboutUsId', tokenValidate(), AboutusController.updateAboutus)
-router.post('/delete/about-us/:aboutUsId', tokenValidate(), AboutusController.deleteAboutus)
-router.post('/active-inactive/about-us/:aboutUsId', tokenValidate(), AboutusController.activeInactiveAboutus)
-router.get('/list/about-us', AboutusController.listAboutus)
+// Admin CMS API's
+router.post('/create/cms', tokenValidate(), uploadCms.single('cms_image'), CmsController.createCms)
+router.post('/cms', tokenValidate(), CmsController.getAllCms)
+router.get('/edit/cms/:cmsId', tokenValidate(), CmsController.editCms)
+router.post('/update/cms/:cmsId', tokenValidate(), uploadCms.single('cms_image'), CmsController.updateCms)
+router.post('/delete/cms/:cmsId', tokenValidate(), CmsController.deleteCms)
+router.post('/active-inactive/cms/:cmsId', tokenValidate(), CmsController.activeInactiveCms)
 
 module.exports = router

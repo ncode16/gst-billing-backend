@@ -20,29 +20,22 @@ exports.createUserContact = async (req, res) => {
             })
         }
 
-        let regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-        if (req.body.contactEmail !== '' && req.body.contactEmail.match(regex)) {
-            let result = await ContactUsService.createContactUs(
-                req.body.contactName,
-                req.body.contactPhone,
-                req.body.contactMessage,
-                req.body.contactEmail,
-                req.body.contactCountry,
-                req.body.contactCity,
-            )
-    
-            return res.json({
-                statusCode: 200,
-                success: true,
-                data: result.rows[0],
-                message: 'User Contact Added Successfully'
-            })
-        } else  {
-            return res.status(400).json({
-                success: false,
-                message: 'Email is not valid'
-            })
-        }
+
+        let result = await ContactUsService.createContactUs(
+            req.body.contactName,
+            req.body.contactPhone,
+            req.body.contactMessage,
+            req.body.contactEmail,
+            req.body.contactCountry,
+            req.body.contactCity,
+        )
+
+        return res.json({
+            statusCode: 200,
+            success: true,
+            data: result.rows[0],
+            message: 'User Contact Added Successfully'
+        })
     } catch (error) {
         console.log('error', error)
     }

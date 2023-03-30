@@ -25,7 +25,7 @@ exports.createFaq = async (req, res) => {
             statusCode: 200,
             success: true,
             data: result.rows[0],
-            message: 'Faq Added Successfully'
+            message: 'FAQ Added Successfully'
         })
     } catch (error) {
         console.log('error', error)
@@ -84,7 +84,7 @@ exports.updateFaq = async (req, res) => {
         return res.json({
             statusCode: 200,
             success: true,
-            message: 'Faq Updated Successfully'
+            message: 'FAQ Updated Successfully'
         })
     } catch (error) {
         console.log('error', error)
@@ -97,7 +97,7 @@ exports.deleteFaq = async (req, res) => {
         return res.json({
             statusCode: 200,
             success: true,
-            message: 'Faq Deleted Successfully'
+            message: 'FAQ Deleted Successfully'
         })
     } catch (error) {
         console.log('error', error)
@@ -111,13 +111,13 @@ exports.activeInactiveFaq = async (req, res) => {
             return res.json({
                 statusCode: 200,
                 success: true,
-                message: 'Faq Activated Successfully'
+                message: 'FAQ Activated Successfully'
             })
         } else {
             return res.json({
                 statusCode: 200,
                 success: true,
-                message: 'Faq Deactivated Successfully'
+                message: 'FAQ Deactivated Successfully'
             })
         }
     } catch (error) {

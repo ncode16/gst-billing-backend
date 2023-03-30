@@ -1,13 +1,13 @@
 const { pool } = require('../../../config/database')
 const { Validator } = require('node-input-validator')
 const Pagination = require('../../../config/config')
-const AboutusService = require('../../services/AboutusService')
+const CmsService = require('../../services/CmsService')
 
-exports.createAboutus = async (req, res) => {
+exports.createCms = async (req, res) => {
     try {
         let v = new Validator(req.body, {
-            aboutusTitle: 'required',
-            aboutusDescription: 'required',
+            cms_title: 'required',
+            cms_description: 'required',
         })
 
         let matched = await v.check()
@@ -19,27 +19,27 @@ exports.createAboutus = async (req, res) => {
             })
         }
 
-        let result = await AboutusService.createAboutus(req.body.aboutusTitle, req.body.aboutusDescription)
+        let result = await CmsService.createCms(req.body.cms_title, req.body.cms_description, req.file.filename)
 
         return res.json({
             statusCode: 200,
             success: true,
             data: result.rows[0],
-            message: 'About Us Added Successfully'
+            message: 'CMS Added Successfully'
         })
     } catch (error) {
         console.log('error', error)
     }
 }
 
-exports.getAllAboutus = async (req, res) => {
+exports.getAllCms = async (req, res) => {
     try {
-        let resultAboutUs = await pool.query('SELECT * FROM aboutus_master WHERE is_deleted = $1 ORDER BY aboutus_id DESC', [false])
-        let finalResultAboutUs = await Pagination.paginator(resultAboutUs.rows, req.body.page, req.body.limit)
+        let resultCms = await pool.query('SELECT * FROM cms_master WHERE is_deleted = $1 ORDER BY cms_id DESC', [false])
+        let finalResultCms = await Pagination.paginator(resultCms.rows, req.body.page, req.body.limit)
         return res.json({
             statusCode: 200,
             success: true,
-            data: finalResultAboutUs,
+            data: finalResultCms,
             message: 'Data Retrived Successfully'
         })
     } catch (error) {
@@ -47,13 +47,13 @@ exports.getAllAboutus = async (req, res) => {
     }
 }
 
-exports.editAboutus = async (req, res) => {
+exports.editCms = async (req, res) => {
     try {
-        let resultAboutus = await pool.query('SELECT * FROM aboutus_master WHERE aboutus_id = $1', [req.params.aboutUsId])
+        let resultCms = await pool.query('SELECT * FROM cms_master WHERE cms_id = $1', [req.params.cmsId])
         return res.json({
             statusCode: 200,
             success: true,
-            data: resultAboutus.rows[0],
+            data: resultCms.rows[0],
             message: 'Data Retrived Successfully'
         })
     } catch (error) {
@@ -61,11 +61,11 @@ exports.editAboutus = async (req, res) => {
     }
 }
 
-exports.updateAboutus = async (req, res) => {
+exports.updateCms = async (req, res) => {
     try {
         let v = new Validator(req.body, {
-            aboutus_title: 'required',
-            aboutus_description: 'required',
+            cms_title: 'required',
+            cms_description: 'required',
         })
 
         let matched = await v.check()
@@ -76,7 +76,8 @@ exports.updateAboutus = async (req, res) => {
                 message: v.errors
             })
         }
-        let query = await AboutusService.updateAboutus(req.params.aboutUsId, req.body)
+        req.body.cms_image = req.file.filename
+        let query = await CmsService.updateCms(req.params.cmsId, req.body)
         let colValues = Object.keys(req.body).map((key) => {
             return req.body[key];
         });
@@ -84,55 +85,42 @@ exports.updateAboutus = async (req, res) => {
         return res.json({
             statusCode: 200,
             success: true,
-            message: 'About Us Updated Successfully'
+            message: 'CMS Updated Successfully'
         })
     } catch (error) {
         console.log('error', error)
     }
 }
 
-exports.deleteAboutus = async (req, res) => {
+exports.deleteCms = async (req, res) => {
     try {
-        await AboutusService.deleteAboutus(req.params.aboutUsId)
+        await CmsService.deleteCms(req.params.cmsId)
         return res.json({
             statusCode: 200,
             success: true,
-            message: 'About Us Deleted Successfully'
+            message: 'CMS Deleted Successfully'
         })
     } catch (error) {
         console.log('error', error)
     }
 }
 
-exports.activeInactiveAboutus = async (req, res) => {
+exports.activeInactiveCms = async (req, res) => {
     try {
-        await AboutusService.activeInactiveAboutus(req.body.isActive, req.params.aboutUsId)
+        await CmsService.activeInactiveCms(req.body.isActive, req.params.cmsId)
         if (req.body.isActive == true) {
             return res.json({
                 statusCode: 200,
                 success: true,
-                message: 'About Us Activated Successfully'
+                message: 'CMS Activated Successfully'
             })
         } else {
             return res.json({
                 statusCode: 200,
                 success: true,
-                message: 'About Us Deactivated Successfully'
+                message: 'CMS Deactivated Successfully'
             })
         }
-    } catch (error) {
-        console.log('error', error)
-    }
-}
-
-exports.listAboutus = async (req, res) => {
-    try {
-        let resultAboutUs = await pool.query('SELECT * FROM aboutus_master WHERE is_deleted = $1', [false])
-        return res.status(200).json({
-            success: true,
-            data: resultAboutUs.rows,
-            message: 'Data Retrived Successfully'
-        })
     } catch (error) {
         console.log('error', error)
     }

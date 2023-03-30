@@ -1,13 +1,14 @@
 const { pool } = require('../../config/database')
 
-module.exports = class FeatureService {
-    static async createAboutus(aboutusTitle, aboutusDescription) {
+module.exports = class CmsService {
+    static async createCms(cmsTitle, cmsDescription, cmsImage) {
         try {
-            let sql = `INSERT INTO aboutus_master (aboutus_title, aboutus_description) VALUES ($1, $2) RETURNING *`
+            let sql = `INSERT INTO cms_master (cms_title, cms_description, cms_image) VALUES ($1, $2, $3) RETURNING *`
 
         let result = await pool.query(sql, [
-            aboutusTitle,
-            aboutusDescription,
+            cmsTitle,
+            cmsDescription,
+            cmsImage
         ])
             return result
         } catch (error) {
@@ -15,33 +16,33 @@ module.exports = class FeatureService {
         }
     }
 
-    static async updateAboutus(id, cols) {
+    static async updateCms(id, cols) {
         try {
-            var query = ['UPDATE aboutus_master'];
+            var query = ['UPDATE cms_master'];
             query.push('SET');
             var set = [];
             Object.keys(cols).forEach(function (key, i) {
                 set.push(key + ' = ($' + (i + 1) + ')');
             });
             query.push(set.join(', '));
-            query.push('WHERE aboutus_id = ' + id);
+            query.push('WHERE cms_id = ' + id);
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
         }
     }
 
-    static async deleteAboutus(id) {
+    static async deleteCms(id) {
         try {
-            return pool.query('UPDATE aboutus_master SET is_deleted = $1 WHERE aboutus_id = $2', [true, id])
+            return pool.query('UPDATE cms_master SET is_deleted = $1 WHERE cms_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
         }
     }
 
-    static async activeInactiveAboutus(id, isActive) {
+    static async activeInactiveCms(id, isActive) {
         try {
-            return pool.query('UPDATE aboutus_master SET is_active = $1 WHERE aboutus_id = $2', [id, isActive])
+            return pool.query('UPDATE cms_master SET is_active = $1 WHERE cms_id = $2', [id, isActive])
         } catch (error) {
             console.log('error', error)
         }

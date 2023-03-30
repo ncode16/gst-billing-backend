@@ -62,8 +62,8 @@ exports.login = async (req, res) => {
                         message: v.errors
                     })
                 }
-                let result = await UserService.createUser(req.body.mobileNumber, otp)
 
+                let result = await UserService.createUser(req.body.mobileNumber, otp)
                 return res.json({
                     statusCode: 200,
                     success: true,
@@ -136,5 +136,43 @@ exports.resendMobileOtp = async (req, res) => {
             message: err,
             data: [],
         })
+    }
+}
+
+exports.updateUserProfile = async (req, res) => {
+    try {
+        let v = new Validator(req.body, {
+            username: 'required'
+        })
+
+        let matched = v.check()
+        if (!matched) {
+            return res.status(400).json({
+                success: false,
+                data: [],
+                message: v.errors()
+            })
+        }
+
+        await pool.query('UPDATE user_master SET first_name = $1, email = $2 WHERE user_id = $3', [req.body.username, req.body.email, req.params.userId])
+        return res.status(200).json({
+            success: true,
+            message: 'User Profile Updated successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        let getUser = await pool.query('SELECT * FROM user_master WHERE user_id = $1', [req.params.userId])
+        return res.status(200).json({
+            success: true,
+            data: getUser.rows[0],
+            message: 'Data Retrived successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
     }
 }
