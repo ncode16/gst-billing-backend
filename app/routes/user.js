@@ -11,6 +11,9 @@ const InvoiceController = require('../controllers/frontend/InvoiceController')
 const CustomerController = require('../controllers/frontend/CustomerController')
 const BillingAddressController = require('../controllers/frontend/BillingAddressController')
 const ShippingAddressController = require('../controllers/frontend/ShippingAddressController')
+const BankController = require('../controllers/frontend/BankController')
+const ProductController = require('../controllers/frontend/ProductController')
+const ExpenseController = require('../controllers/frontend/ExpenseController')
 
 // User Authentication API's
 router.post('/user/login', UserController.login)
@@ -60,5 +63,26 @@ router.post('/shipping-address', tokencheck(), ShippingAddressController.getAllS
 router.get('/edit/shipping-address/:shippingAddressId', tokencheck(), ShippingAddressController.editShippingAddress)
 router.post('/update/shipping-address/:shippingAddressId', tokencheck(), ShippingAddressController.updateShippingAddress)
 router.post('/delete/shipping-address/:shippingAddressId', tokencheck(), ShippingAddressController.deleteShippingAddress)
+
+// Bank Details API's
+router.post('/create/bank', tokencheck(), BankController.createBank)
+router.post('/bank', tokencheck(), BankController.getAllBank)
+router.get('/edit/bank/:bankId', tokencheck(), BankController.editBank)
+router.post('/update/bank/:bankId', tokencheck(), BankController.updateBank)
+router.post('/delete/bank/:bankId', tokencheck(), BankController.deleteBank)
+
+// Product API's
+router.post('/create/product', tokencheck(), ProductController.createProduct)
+router.post('/product', tokencheck(), ProductController.getAllProduct)
+router.get('/edit/product/:productId', tokencheck(), ProductController.editProduct)
+router.post('/update/product/:productId', tokencheck(), ProductController.updateProduct)
+router.post('/delete/product/:productId', tokencheck(), ProductController.deleteProduct)
+
+// Expense API's
+router.post('/create/expense', tokencheck(), ExpenseController.createExpense)
+router.post('/expense', tokencheck(), ExpenseController.getAllExpense)
+router.get('/edit/expense/:expenseId', tokencheck(), ExpenseController.editExpense)
+router.post('/update/expense/:expenseId', tokencheck(), ExpenseController.updateExpense)
+router.post('/delete/expense/:expenseId', tokencheck(), ExpenseController.deleteExpense)
 
 module.exports = router

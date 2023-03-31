@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 exports.login = async (req, res) => {
     try {
         let users = await pool.query('SELECT * FROM user_master WHERE mobile_number = $1', [req.body.mobileNumber])
-        let otp = Math.floor(1000 + Math.random() * 9000)
+        let otp = Math.floor(100000 + Math.random() * 900000)
         var request = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
         request.headers({
             "authorization": process.env.FAST2SMS_AUTHORIZATION
@@ -29,26 +29,34 @@ exports.login = async (req, res) => {
                         message: 'Email is not valid'
                     })
                 }
-                let token = jwt.sign({
-                    _id: users.rows[0]._id,
-                    first_name: users.rows[0].first_name,
-                }, process.env.JWT_SECRET, { expiresIn: 86400 })
-
-                let user = {
-                    token,
-                    first_name: users.rows[0].first_name,
-                    last_name: users.rows[0].last_name,
-                    email: users.rows[0].email,
-                    mobile_number: users.rows[0].mobile_number,
-                    user_otp: otp,
+                var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+                if(req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
+                    let token = jwt.sign({
+                        _id: users.rows[0]._id,
+                        first_name: users.rows[0].first_name,
+                    }, process.env.JWT_SECRET, { expiresIn: 86400 })
+    
+                    let user = {
+                        token,
+                        first_name: users.rows[0].first_name,
+                        last_name: users.rows[0].last_name,
+                        email: users.rows[0].email,
+                        mobile_number: users.rows[0].mobile_number,
+                        user_otp: otp,
+                    }
+                    await UserService.resendOtp(users.rows[0].user_id, otp)
+                    return res.json({
+                        statusCode: 200,
+                        success: true,
+                        data: user,
+                        message: 'User Login Successfully'
+                    })
+                } else {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Mobile Number is not valid'
+                    })
                 }
-                await UserService.resendOtp(users.rows[0].user_id, otp)
-                return res.json({
-                    statusCode: 200,
-                    success: true,
-                    data: user,
-                    message: 'User Login Successfully'
-                })
             } else {
                 let v = new Validator(req.body, {
                     mobileNumber: 'required',
@@ -62,14 +70,21 @@ exports.login = async (req, res) => {
                         message: v.errors
                     })
                 }
-
-                let result = await UserService.createUser(req.body.mobileNumber, otp)
-                return res.json({
-                    statusCode: 200,
-                    success: true,
-                    data: result.rows[0],
-                    message: 'User Register Successfully'
-                })
+                var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+                if(req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
+                    let result = await UserService.createUser(req.body.mobileNumber, otp)
+                    return res.json({
+                        statusCode: 200,
+                        success: true,
+                        data: result.rows[0],
+                        message: 'User Register Successfully'
+                    })
+                } else {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Mobile Number is not valid'
+                    })
+                }
             }
         });
     } catch (error) {
