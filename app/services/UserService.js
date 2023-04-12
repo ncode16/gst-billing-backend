@@ -3,16 +3,16 @@ const { pool } = require('../../config/database')
 module.exports = class UserService {
     static async createUser(mobileNumber, otp) {
         try {
-            let sql = `INSERT INTO user_master (mobile_number, is_register, user_otp) VALUES ($1, $2, $3) RETURNING *`
+            let sql = `INSERT INTO user_master (mobile_number, user_otp) VALUES ($1, $2) RETURNING *`
 
             let result = await pool.query(sql, [
                 mobileNumber,
-                true,
                 otp
             ])
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -30,6 +30,7 @@ module.exports = class UserService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -38,6 +39,7 @@ module.exports = class UserService {
             return pool.query('UPDATE user_master SET user_otp = $1 WHERE user_id = $2', [otp, userId])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

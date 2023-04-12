@@ -11,8 +11,7 @@ exports.createFeature = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -20,8 +19,7 @@ exports.createFeature = async (req, res) => {
 
         let result = await FeatureService.createFeature(req.body.featureName)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'Feature Added Successfully'
@@ -35,8 +33,7 @@ exports.getAllFeature = async (req, res) => {
     try {
         let resultFeature = await pool.query('SELECT * FROM feature_master WHERE is_deleted = $1 ORDER BY feature_id DESC', [false])
         let finalResultFeature = await Pagination.paginator(resultFeature.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultFeature,
             message: 'Data Retrived Successfully'
@@ -49,8 +46,7 @@ exports.getAllFeature = async (req, res) => {
 exports.editFeature = async (req, res) => {
     try {
         let resultFeature = await pool.query('SELECT * FROM feature_master WHERE feature_id = $1', [req.params.featureId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultFeature.rows[0],
             message: 'Data Retrived Successfully'
@@ -68,8 +64,7 @@ exports.updateFeature = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -79,8 +74,7 @@ exports.updateFeature = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Feature Updated Successfully'
         })
@@ -92,8 +86,7 @@ exports.updateFeature = async (req, res) => {
 exports.deleteFeature = async (req, res) => {
     try {
         await FeatureService.deleteFeature(req.params.featureId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Feature Deleted Successfully'
         })
@@ -106,14 +99,12 @@ exports.activeInactiveFeature = async (req, res) => {
     try {
         await FeatureService.activeInactiveFeature(req.body.isActive, req.params.featureId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Feature Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Feature Deactivated Successfully'
             })

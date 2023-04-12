@@ -1,6 +1,6 @@
 const { pool } = require('../../config/database')
 
-module.exports = class FeatureService {
+module.exports = class CategoryService {
     static async createCategory(categoryName) {
         try {
             let sql = `INSERT INTO category_master (category_name) VALUES ($1) RETURNING *`
@@ -11,6 +11,7 @@ module.exports = class FeatureService {
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -27,6 +28,7 @@ module.exports = class FeatureService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -35,6 +37,7 @@ module.exports = class FeatureService {
             return pool.query('UPDATE category_master SET is_deleted = $1 WHERE category_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -43,6 +46,7 @@ module.exports = class FeatureService {
             return pool.query('UPDATE category_master SET is_active = $1 WHERE category_id = $2', [id, isActive])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

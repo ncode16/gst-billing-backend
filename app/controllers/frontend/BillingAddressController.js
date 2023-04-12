@@ -36,8 +36,7 @@ exports.getAllBillingAddress = async (req, res) => {
     try {
         let resultBillingAddress = await pool.query('SELECT * FROM billing_address_master WHERE is_deleted = $1 ORDER BY billing_address_id DESC', [false])
         let finalResultBillingAddress = await Pagination.paginator(resultBillingAddress.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultBillingAddress,
             message: 'Data Retrived Successfully'
@@ -80,7 +79,6 @@ exports.updateBillingAddress = async (req, res) => {
         });
         await pool.query(query, colValues)
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Billing Address Updated Successfully'
         })

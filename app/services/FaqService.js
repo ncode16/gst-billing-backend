@@ -1,6 +1,6 @@
 const { pool } = require('../../config/database')
 
-module.exports = class FeatureService {
+module.exports = class FaqService {
     static async createFaq(title, description) {
         try {
             let sql = `INSERT INTO faq_master (title, description) VALUES ($1, $2) RETURNING *`
@@ -12,6 +12,7 @@ module.exports = class FeatureService {
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -28,6 +29,7 @@ module.exports = class FeatureService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -36,6 +38,7 @@ module.exports = class FeatureService {
             return pool.query('UPDATE faq_master SET is_deleted = $1 WHERE faq_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -44,6 +47,7 @@ module.exports = class FeatureService {
             return pool.query('UPDATE faq_master SET is_active = $1 WHERE faq_id = $2', [id, isActive])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

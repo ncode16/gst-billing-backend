@@ -3,8 +3,7 @@ const { pool } = require('../../../config/database')
 exports.listFeature = async (req, res) => {
     try {
         let resultFeature = await pool.query('SELECT * FROM feature_master WHERE is_deleted = $1 and is_active = $2', [false, true])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultFeature.rows,
             message: 'Data Retrived Successfully'
@@ -17,8 +16,7 @@ exports.listFeature = async (req, res) => {
 exports.listFaq = async (req, res) => {
     try {
         let resultFaq = await pool.query('SELECT * FROM faq_master WHERE is_deleted = $1 and is_active = $2', [false, true])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultFaq.rows,
             message: 'Data Retrived Successfully'
@@ -42,8 +40,7 @@ exports.listTemplate = async (req, res) => {
             }
             return array.push(data)
         })
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: array,
             message: 'Data Retrived Successfully'
@@ -64,8 +61,7 @@ exports.listCms = async (req, res) => {
             is_active: resultCms.rows[0].is_active,
             is_deleted: resultCms.rows[0].is_deleted,
         }
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalCmsData,
             message: 'Data Retrived Successfully'

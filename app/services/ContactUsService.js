@@ -16,6 +16,7 @@ module.exports = class ContactService {
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -32,6 +33,7 @@ module.exports = class ContactService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -40,6 +42,7 @@ module.exports = class ContactService {
             await pool.query('UPDATE contact_master SET is_deleted = $1 WHERE contact_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -48,6 +51,7 @@ module.exports = class ContactService {
             await pool.query('UPDATE contact_master SET is_active = $1 WHERE contact_id = $2', [isActive, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

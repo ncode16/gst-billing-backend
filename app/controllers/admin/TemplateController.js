@@ -12,8 +12,7 @@ exports.createTemplate = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -21,8 +20,7 @@ exports.createTemplate = async (req, res) => {
 
         let result = await TemplateService.createTemplate(req.body.template_name, req.file.filename)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'Template Added Successfully'
@@ -47,8 +45,7 @@ exports.getAllTemplate = async (req, res) => {
             return array.push(data)
         })
         let finalResultTemplate = await Pagination.paginator(array, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultTemplate,
             message: 'Data Retrived Successfully'
@@ -68,8 +65,7 @@ exports.editTemplate = async (req, res) => {
             is_active: resultTemplate.rows[0].is_active,
             is_deleted: resultTemplate.rows[0].is_deleted,
         }
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalTemplateData,
             message: 'Data Retrived Successfully'
@@ -81,16 +77,17 @@ exports.editTemplate = async (req, res) => {
 
 exports.updateTemplate = async (req, res) => {
     try {
-        let v = new Validator(req.body, {
-            template_name: 'required',
-        })
-
-        let matched = await v.check()
-        if (!matched) {
-            return res.json({
-                statusCode: 400,
-                success: false,
-                message: v.errors
+        let resultTemplate = await pool.query('SELECT * FROM template_master WHERE template_id = $1', [req.params.templateId])
+        if(req.body.template_image === "") {
+            req.body.template_image = resultTemplate.rows[0].template_image
+            let query = await TemplateService.updateTemplate(req.params.templateId, req.body)
+            let colValues = Object.keys(req.body).map((key) => {
+                return req.body[key];
+            });
+            await pool.query(query, colValues)
+            return res.status(200).json({
+                success: true,
+                message: 'Template Updated Successfully'
             })
         }
         req.body.template_image = req.file.filename
@@ -99,8 +96,7 @@ exports.updateTemplate = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Template Updated Successfully'
         })
@@ -112,8 +108,7 @@ exports.updateTemplate = async (req, res) => {
 exports.deleteTemplate = async (req, res) => {
     try {
         await TemplateService.deleteTemplate(req.params.templateId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Template Deleted Successfully'
         })
@@ -126,14 +121,12 @@ exports.activeInactiveTemplate = async (req, res) => {
     try {
         await TemplateService.activeInactiveTemplate(req.body.isActive, req.params.templateId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Template Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Template Deactivated Successfully'
             })

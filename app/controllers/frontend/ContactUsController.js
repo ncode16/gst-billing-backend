@@ -13,8 +13,7 @@ exports.createUserContact = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -30,8 +29,7 @@ exports.createUserContact = async (req, res) => {
             req.body.contactCity,
         )
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'User Contact Added Successfully'

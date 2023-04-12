@@ -13,6 +13,7 @@ module.exports = class ExpenseService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -29,6 +30,7 @@ module.exports = class ExpenseService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -37,6 +39,16 @@ module.exports = class ExpenseService {
             return pool.query('UPDATE expense_master SET is_deleted = $1 WHERE expense_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
+        }
+    }
+    
+    static async cancelExpense(id) {
+        try {
+            return pool.query('UPDATE expense_master SET is_cancelled = $1 WHERE expense_id = $2', [true, id])
+        } catch (error) {
+            console.log('error', error)
+            throw error
         }
     }
 }

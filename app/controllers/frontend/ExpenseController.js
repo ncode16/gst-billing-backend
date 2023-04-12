@@ -36,8 +36,7 @@ exports.getAllExpense = async (req, res) => {
     try {
         let resultExpense = await pool.query('SELECT * FROM expense_master WHERE is_deleted = $1 ORDER BY expense_id DESC', [false])
         let finalResultExpense = await Pagination.paginator(resultExpense.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultExpense,
             message: 'Data Retrived Successfully'
@@ -80,7 +79,6 @@ exports.updateExpense = async (req, res) => {
         });
         await pool.query(query, colValues)
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Expense Updated Successfully'
         })
@@ -95,6 +93,18 @@ exports.deleteExpense = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Expense Deleted Successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+exports.cancelExpense = async (req, res) => {
+    try {
+        await ExpenseService.cancelExpense(req.params.expenseId)
+        return res.status(200).json({
+            success: true,
+            message: 'Expense Cancelled Successfully'
         })
     } catch (error) {
         console.log('error', error)

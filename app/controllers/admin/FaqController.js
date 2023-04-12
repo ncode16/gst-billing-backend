@@ -12,8 +12,7 @@ exports.createFaq = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -21,8 +20,7 @@ exports.createFaq = async (req, res) => {
 
         let result = await FaqService.createFaq(req.body.title, req.body.description)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'FAQ Added Successfully'
@@ -36,8 +34,7 @@ exports.getAllFaq = async (req, res) => {
     try {
         let resultFaq = await pool.query('SELECT * FROM faq_master WHERE is_deleted = $1 ORDER BY faq_id DESC', [false])
         let finalResultFaq = await Pagination.paginator(resultFaq.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultFaq,
             message: 'Data Retrived Successfully'
@@ -50,8 +47,7 @@ exports.getAllFaq = async (req, res) => {
 exports.editFaq = async (req, res) => {
     try {
         let resultFaq = await pool.query('SELECT * FROM faq_master WHERE faq_id = $1', [req.params.faqId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultFaq.rows[0],
             message: 'Data Retrived Successfully'
@@ -70,8 +66,7 @@ exports.updateFaq = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -81,8 +76,7 @@ exports.updateFaq = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'FAQ Updated Successfully'
         })
@@ -94,8 +88,7 @@ exports.updateFaq = async (req, res) => {
 exports.deleteFaq = async (req, res) => {
     try {
         await FaqService.deleteFaq(req.params.faqId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'FAQ Deleted Successfully'
         })
@@ -108,14 +101,12 @@ exports.activeInactiveFaq = async (req, res) => {
     try {
         await FaqService.activeInactiveFaq(req.body.isActive, req.params.faqId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'FAQ Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'FAQ Deactivated Successfully'
             })

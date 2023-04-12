@@ -38,8 +38,7 @@ exports.getAllProduct = async (req, res) => {
     try {
         let resultProduct = await pool.query('SELECT * FROM product_master WHERE is_deleted = $1 ORDER BY product_id DESC', [false])
         let finalResultProduct = await Pagination.paginator(resultProduct.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultProduct,
             message: 'Data Retrived Successfully'
@@ -84,7 +83,6 @@ exports.updateProduct = async (req, res) => {
         });
         await pool.query(query, colValues)
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Product Updated Successfully'
         })

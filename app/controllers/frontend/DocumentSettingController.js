@@ -24,7 +24,6 @@ exports.updateDocument = async (req, res) => {
         await pool.query(query, colValues)
 
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Document Setting Updated Successfully'
         })

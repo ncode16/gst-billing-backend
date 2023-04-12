@@ -16,8 +16,7 @@ exports.getAllUserContact = async (req, res) => {
     try {
         let resultContact = await pool.query('SELECT * FROM contact_master WHERE is_deleted = $1 ORDER BY contact_id DESC', [false])
         let finalResultContact = await Pagination.paginator(resultContact.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultContact,
             message: 'Data Retrived Successfully'
@@ -30,8 +29,7 @@ exports.getAllUserContact = async (req, res) => {
 exports.getUserContact = async (req, res) => {
     try {
         let resultFeature = await pool.query('SELECT * FROM contact_master WHERE contact_id = $1', [req.params.contactId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultFeature.rows[0],
             message: 'Data Retrived Successfully'
@@ -48,8 +46,7 @@ exports.updateUserContact = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'User Contact Updated Successfully'
         })
@@ -61,8 +58,7 @@ exports.updateUserContact = async (req, res) => {
 exports.deleteUserContact = async (req, res) => {
     try {
         await ContactUsService.deleteContactUs(req.params.contactId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'User Contact Deleted Successfully'
         })
@@ -75,14 +71,12 @@ exports.activeInactiveUserContact = async (req, res) => {
     try {
         await ContactUsService.activeInactiveContactUs(req.body.isActive, req.params.contactId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'User Contact Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'User Contact Deactivated Successfully'
             })
@@ -104,8 +98,7 @@ exports.sendUserContactEmail = async (req, res) => {
             if (err) {
                 console.log('error', err)
             }
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Email Sent Successfully'
             })

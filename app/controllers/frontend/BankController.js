@@ -39,8 +39,7 @@ exports.getAllBank = async (req, res) => {
     try {
         let resultBank = await pool.query('SELECT * FROM bank_master WHERE is_deleted = $1 ORDER BY bank_id DESC', [false])
         let finalResultBank = await Pagination.paginator(resultBank.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultBank,
             message: 'Data Retrived Successfully'
@@ -86,7 +85,6 @@ exports.updateBank = async (req, res) => {
         });
         await pool.query(query, colValues)
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Bank Details Updated Successfully'
         })

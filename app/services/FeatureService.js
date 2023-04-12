@@ -11,6 +11,7 @@ module.exports = class FeatureService {
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -27,6 +28,7 @@ module.exports = class FeatureService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -35,6 +37,7 @@ module.exports = class FeatureService {
             return pool.query('UPDATE feature_master SET is_deleted = $1 WHERE feature_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -43,6 +46,7 @@ module.exports = class FeatureService {
             return pool.query(`UPDATE "feature_master" SET "is_active" = $1 WHERE "feature_id" = $2`, [isActive, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

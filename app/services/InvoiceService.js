@@ -1,6 +1,6 @@
 const { pool } = require('../../config/database')
 
-module.exports = class ContactService {
+module.exports = class InvoiceService {
     static async createInvoice(cols) {
         try {
             var query = ['INSERT INTO invoice_master'];
@@ -13,6 +13,7 @@ module.exports = class ContactService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -29,6 +30,7 @@ module.exports = class ContactService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -37,6 +39,7 @@ module.exports = class ContactService {
             return pool.query('UPDATE invoice_master SET is_deleted = $1 WHERE invoice_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -45,6 +48,7 @@ module.exports = class ContactService {
             return pool.query('UPDATE invoice_master SET is_cancelled = $1 WHERE invoice_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

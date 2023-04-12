@@ -14,6 +14,7 @@ module.exports = class DocumentSettingService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

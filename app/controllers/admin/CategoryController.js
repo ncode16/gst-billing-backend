@@ -11,8 +11,7 @@ exports.createCategory = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -20,8 +19,7 @@ exports.createCategory = async (req, res) => {
 
         let result = await CategoryService.createCategory(req.body.categoryName)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'Category Added Successfully'
@@ -35,8 +33,7 @@ exports.getAllCategory = async (req, res) => {
     try {
         let resultCategory = await pool.query('SELECT * FROM category_master WHERE is_deleted = $1 ORDER BY category_id DESC', [false])
         let finalResultCategory = await Pagination.paginator(resultCategory.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultCategory,
             message: 'Data Retrived Successfully'
@@ -67,8 +64,7 @@ exports.updateCategory = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -78,8 +74,7 @@ exports.updateCategory = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Category Updated Successfully'
         })
@@ -91,8 +86,7 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
     try {
         await CategoryService.deleteCategory(req.params.categoryId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Category Deleted Successfully'
         })
@@ -105,14 +99,12 @@ exports.activeInactiveCategory = async (req, res) => {
     try {
         await CategoryService.activeInactiveCategory(req.body.isActive, req.params.categoryId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Category Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Category Deactivated Successfully'
             })

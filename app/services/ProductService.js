@@ -13,6 +13,7 @@ module.exports = class ProductService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -29,6 +30,7 @@ module.exports = class ProductService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -37,6 +39,7 @@ module.exports = class ProductService {
             return pool.query('UPDATE product_master SET is_deleted = $1 WHERE product_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

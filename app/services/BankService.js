@@ -13,6 +13,7 @@ module.exports = class BankService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -29,6 +30,7 @@ module.exports = class BankService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -37,6 +39,7 @@ module.exports = class BankService {
             return pool.query('UPDATE bank_master SET is_deleted = $1 WHERE bank_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

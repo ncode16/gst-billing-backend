@@ -6,19 +6,21 @@ const cors = require('cors')
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets')))
 
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", '*')
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//     next()
-// })
+const indexPath = __dirname + '/views/';
 
-// const reactBuildPath = path.join(__dirname, 'build')
-// app.use(express.static(reactBuildPath))
+app.use(express.static(indexPath))
 
-// app.get("*", (req, res) => {
-//     res.sendFile(reactBuildPath)
-// })
+// Run GST Frontend
+app.get('/user', function (req,res) {
+    res.sendFile(indexPath + "index.html");
+});
+
+// Run GST Admin Panel
+app.get("/login", (_req, res) => {
+    res.sendFile(path.join(__dirname, "dist", "index.html"));
+})
 
 // Define Routes
 const adminRoute = require('./app/routes/admin')

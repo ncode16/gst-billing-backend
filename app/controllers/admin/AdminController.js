@@ -28,8 +28,7 @@ exports.createAdmin = async (req, res) => {
             password,
         ])
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'Admin Added Successfully'
@@ -47,8 +46,7 @@ exports.addUser = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -62,8 +60,7 @@ exports.addUser = async (req, res) => {
             req.body.mobile_number,
         ])
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'User Added Successfully'
@@ -77,16 +74,14 @@ exports.adminLogin = async (req, res) => {
     try {
         let users = await pool.query('SELECT * FROM admin_master WHERE email = $1', [req.body.email])
         if (users.rows.length === 0) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: 'Email is not valid'
             })
         }
 
         if (!bcrypt.compareSync(req.body.password, users.rows[0].password)) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: 'Password does not match'
             })
@@ -114,8 +109,7 @@ exports.adminLogin = async (req, res) => {
                     email: users.rows[0].email,
                 },
             }
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 data: user,
                 message: 'Admin Login Successfully'
@@ -136,8 +130,7 @@ exports.getFaqAndFeatureList = async (req, res) => {
             faqDetail: resultFaq.rows,
         }
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalList,
             message: 'Data Retrived Successfully'
@@ -151,8 +144,7 @@ exports.getAllUser = async (req, res) => {
     try {
         let resultUser = await pool.query('SELECT * FROM user_master WHERE is_deleted = $1 ORDER BY user_id DESC', [false])
         let finalResultUser = await Pagination.paginator(resultUser.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultUser,
             message: 'Data Retrived Successfully'
@@ -165,8 +157,7 @@ exports.getAllUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         let resultUser = await pool.query('SELECT * FROM user_master WHERE user_id = $1', [req.params.userId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultUser.rows[0],
             message: 'Data Retrived Successfully'
@@ -183,8 +174,7 @@ exports.updateUser = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'User Updated Successfully'
         })
@@ -196,8 +186,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         await pool.query('UPDATE user_master SET is_deleted = $1 WHERE user_id = $2', [true, req.params.userId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'User Deleted Successfully'
         })
@@ -210,14 +199,12 @@ exports.activeInactiveUser = async (req, res) => {
     try {
         await pool.query('UPDATE user_master SET is_active = $1 WHERE user_id = $2', [req.body.isActive, req.params.userId])
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'User Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'User Deactivated Successfully'
             })
@@ -231,9 +218,8 @@ exports.forgotPassword = async (req, res) => {
     try {
         let email = await pool.query('SELECT email from admin_master WHERE email = $1', [req.body.email])
         if (email.rows.length == 0) {
-            return res.json({
+            return res.status(400).json({
                 success: true,
-                statusCode: 400,
                 message: 'Email is not valid',
             })
         }
@@ -252,11 +238,10 @@ exports.forgotPassword = async (req, res) => {
 
         transporter.sendMail(data, (err, body) => {
             if (err) {
-                return res.json({ error: err.message })
+                return res.status(400).json({ error: err.message })
             }
-            return res.json({
+            return res.status(200).json({
                 success: true,
-                statusCode: 200,
                 message: 'Email has been sent, kindly Follow the instruction',
             })
         })

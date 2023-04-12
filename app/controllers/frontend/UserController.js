@@ -23,19 +23,18 @@ exports.login = async (req, res) => {
 
             if (users.rows.length > 0) {
                 if (users.rows.length === 0) {
-                    return res.json({
-                        statusCode: 400,
+                    return res.status(400).json({
                         success: false,
                         message: 'Email is not valid'
                     })
                 }
                 var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-                if(req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
+                if (req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
                     let token = jwt.sign({
                         _id: users.rows[0]._id,
                         first_name: users.rows[0].first_name,
                     }, process.env.JWT_SECRET, { expiresIn: 86400 })
-    
+
                     let user = {
                         token,
                         first_name: users.rows[0].first_name,
@@ -45,8 +44,7 @@ exports.login = async (req, res) => {
                         user_otp: otp,
                     }
                     await UserService.resendOtp(users.rows[0].user_id, otp)
-                    return res.json({
-                        statusCode: 200,
+                    return res.status(200).json({
                         success: true,
                         data: user,
                         message: 'User Login Successfully'
@@ -64,17 +62,15 @@ exports.login = async (req, res) => {
 
                 let matched = await v.check()
                 if (!matched) {
-                    return res.json({
-                        statusCode: 400,
+                    return res.status(400).json({
                         success: false,
                         message: v.errors
                     })
                 }
                 var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-                if(req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
+                if (req.body.mobileNumber !== '' && phoneno.test(req.body.mobileNumber)) {
                     let result = await UserService.createUser(req.body.mobileNumber, otp)
-                    return res.json({
-                        statusCode: 200,
+                    return res.status(200).json({
                         success: true,
                         data: result.rows[0],
                         message: 'User Register Successfully'
@@ -96,23 +92,20 @@ exports.verifyMobileOtp = async (req, res) => {
     try {
         let user = await pool.query('SELECT mobile_number, user_otp FROM user_master WHERE mobile_number = $1', [req.body.mobileNumber])
         if (user.rows && req.body.mobileOtpValue === user.rows[0].user_otp) {
-            return res.json({
+            return res.status(200).json({
                 success: true,
-                statusCode: 200,
                 message: 'OTP verified successfully',
             })
         } else {
-            return res.json({
+            return res.status(400).json({
                 success: false,
-                statusCode: 400,
                 message: 'Invalid OTP',
             })
         }
     } catch (error) {
         console.log('error', error)
-        return res.json({
+        return res.status(400).json({
             success: false,
-            statusCode: 400,
             message: error,
             data: [],
         })
@@ -122,7 +115,7 @@ exports.verifyMobileOtp = async (req, res) => {
 exports.resendMobileOtp = async (req, res) => {
     try {
         let user = await pool.query('SELECT user_id, mobile_number FROM user_master')
-        let otp = Math.floor(1000 + Math.random() * 9000)
+        let otp = Math.floor(100000 + Math.random() * 900000)
         var method = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
         method.headers({
             "authorization": process.env.FAST2SMS_AUTHORIZATION
@@ -137,17 +130,15 @@ exports.resendMobileOtp = async (req, res) => {
             if (response.error) throw new Error(response.error);
             await UserService.resendOtp(user.rows[0].user_id, otp)
 
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'OTP resend successfully'
             })
         });
     } catch (error) {
         console.log('error', error)
-        return res.json({
+        return res.status(400).json({
             success: false,
-            statusCode: 400,
             message: err,
             data: [],
         })
@@ -186,6 +177,31 @@ exports.getUserProfile = async (req, res) => {
             success: true,
             data: getUser.rows[0],
             message: 'Data Retrived successfully'
+        })
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+exports.sendPurchaseSms = async (req, res) => {
+    try {
+        var sms_request = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
+        sms_request.headers({
+            "authorization": process.env.FAST2SMS_AUTHORIZATION
+        });
+
+        sms_request.form({
+            "message": req.body.message,
+            "language": "english",
+            "route": "q",
+            "numbers": req.body.mobileNumber,
+        });
+        sms_request.end((response) => {
+            if (response.error) throw new Error(response.error);
+            return res.status(200).json({
+                success: true,
+                message: 'SMS Sent successfully'
+            })
         })
     } catch (error) {
         console.log('error', error)

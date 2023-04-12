@@ -39,8 +39,7 @@ exports.getAllCustomer = async (req, res) => {
     try {
         let resultCustomer = await pool.query('SELECT * FROM customer_master WHERE is_deleted = $1 ORDER BY customer_id DESC', [false])
         let finalResultCustomer = await Pagination.paginator(resultCustomer.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultCustomer,
             message: 'Data Retrived Successfully'
@@ -83,7 +82,6 @@ exports.updateCustomer = async (req, res) => {
         });
         await pool.query(query, colValues)
         return res.status(200).json({
-            statusCode: 200,
             success: true,
             message: 'Customer Updated Successfully'
         })

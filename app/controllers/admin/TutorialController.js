@@ -12,8 +12,7 @@ exports.createTutorial = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -21,8 +20,7 @@ exports.createTutorial = async (req, res) => {
 
         let resultTutorial = await TutorialService.createTutorial(req.body.tutorialTitle, req.body.tutorialLink, req.body.categoryId)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultTutorial.rows[0],
             message: 'Tutorial Added Successfully'
@@ -36,8 +34,7 @@ exports.getAllTutorial = async (req, res) => {
     try {
         let resultTutorial = await pool.query('SELECT * FROM tutorial_master WHERE is_deleted = $1 ORDER BY tutorial_id DESC', [false])
         let finalResultTutorial = await Pagination.paginator(resultTutorial.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultTutorial,
             message: 'Data Retrived Successfully'
@@ -50,8 +47,7 @@ exports.getAllTutorial = async (req, res) => {
 exports.editTutorial = async (req, res) => {
     try {
         let resultTutorial = await pool.query('SELECT * FROM tutorial_master LEFT JOIN category_master ON category_master.category_id = tutorial_master.category_id WHERE tutorial_master.tutorial_id = $1', [req.params.tutorialId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultTutorial.rows[0],
             message: 'Data Retrived Successfully'
@@ -70,8 +66,7 @@ exports.updateTutorial = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -81,8 +76,7 @@ exports.updateTutorial = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Tutorial Updated Successfully'
         })
@@ -94,8 +88,7 @@ exports.updateTutorial = async (req, res) => {
 exports.deleteTutorial = async (req, res) => {
     try {
         await TutorialService.deleteTutorial(req.params.tutorialId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Tutorial Deleted Successfully'
         })
@@ -108,14 +101,12 @@ exports.activeInactiveTutorial = async (req, res) => {
     try {
         await TutorialService.activeInactiveTutorial(req.body.isActive, req.params.tutorialId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Tutorial Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Tutorial Deactivated Successfully'
             })

@@ -12,16 +12,14 @@ exports.createCms = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
         }
         let result = await CmsService.createCms(req.body.cms_title, req.body.cms_description, req.file.filename)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'CMS Added Successfully'
@@ -47,8 +45,7 @@ exports.getAllCms = async (req, res) => {
             return cms.push(data)
         })
         let finalResultCms = await Pagination.paginator(cms, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultCms,
             message: 'Data Retrived Successfully'
@@ -69,8 +66,7 @@ exports.editCms = async (req, res) => {
             is_active: resultCms.rows[0].is_active,
             is_deleted: resultCms.rows[0].is_deleted,
         }
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalCmsData,
             message: 'Data Retrived Successfully'
@@ -89,10 +85,22 @@ exports.updateCms = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
+            })
+        }
+        let resultCms = await pool.query('SELECT * FROM cms_master WHERE cms_id = $1', [req.params.cmsId])
+        if(req.body.cms_image === "") {
+            req.body.cms_image = resultCms.rows[0].cms_image
+            let query = await CmsService.updateCms(req.params.cmsId, req.body)
+            let colValues = Object.keys(req.body).map((key) => {
+                return req.body[key];
+            });
+            await pool.query(query, colValues)
+            return res.status(200).json({
+                success: true,
+                message: 'CMS Updated Successfully'
             })
         }
         req.body.cms_image = req.file.filename
@@ -101,8 +109,7 @@ exports.updateCms = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'CMS Updated Successfully'
         })
@@ -114,8 +121,7 @@ exports.updateCms = async (req, res) => {
 exports.deleteCms = async (req, res) => {
     try {
         await CmsService.deleteCms(req.params.cmsId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'CMS Deleted Successfully'
         })
@@ -128,14 +134,12 @@ exports.activeInactiveCms = async (req, res) => {
     try {
         await CmsService.activeInactiveCms(req.body.isActive, req.params.cmsId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'CMS Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'CMS Deactivated Successfully'
             })

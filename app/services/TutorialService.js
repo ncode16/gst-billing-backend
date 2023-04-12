@@ -13,6 +13,7 @@ module.exports = class TutorialService {
             return result
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -29,6 +30,7 @@ module.exports = class TutorialService {
             return query.join(' ');
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -37,6 +39,7 @@ module.exports = class TutorialService {
             return pool.query('UPDATE tutorial_master SET is_deleted = $1 WHERE tutorial_id = $2', [true, id])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 
@@ -45,6 +48,7 @@ module.exports = class TutorialService {
             return pool.query('UPDATE tutorial_master SET is_active = $1 WHERE tutorial_id = $2', [id, isActive])
         } catch (error) {
             console.log('error', error)
+            throw error
         }
     }
 }

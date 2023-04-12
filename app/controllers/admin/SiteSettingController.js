@@ -11,8 +11,7 @@ exports.createSiteSetting = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -20,8 +19,7 @@ exports.createSiteSetting = async (req, res) => {
 
         let result = await SiteSettingService.createSiteSetting(req.body.siteSettingUrl)
 
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: result.rows[0],
             message: 'Site Setting Added Successfully'
@@ -35,8 +33,7 @@ exports.getAllSiteSetting = async (req, res) => {
     try {
         let resultSiteSetting = await pool.query('SELECT * FROM site_setting_master WHERE is_deleted = $1 ORDER BY site_setting_id DESC', [false])
         let finalResultSiteSetting = await Pagination.paginator(resultSiteSetting.rows, req.body.page, req.body.limit)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: finalResultSiteSetting,
             message: 'Data Retrived Successfully'
@@ -49,8 +46,7 @@ exports.getAllSiteSetting = async (req, res) => {
 exports.editSiteSetting = async (req, res) => {
     try {
         let resultSiteSetting = await pool.query('SELECT * FROM site_setting_master WHERE site_setting_id = $1', [req.params.siteSettingId])
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             data: resultSiteSetting.rows[0],
             message: 'Data Retrived Successfully'
@@ -68,8 +64,7 @@ exports.updateSiteSetting = async (req, res) => {
 
         let matched = await v.check()
         if (!matched) {
-            return res.json({
-                statusCode: 400,
+            return res.status(400).json({
                 success: false,
                 message: v.errors
             })
@@ -79,8 +74,7 @@ exports.updateSiteSetting = async (req, res) => {
             return req.body[key];
         });
         await pool.query(query, colValues)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Site Setting Updated Successfully'
         })
@@ -92,8 +86,7 @@ exports.updateSiteSetting = async (req, res) => {
 exports.deleteSiteSetting = async (req, res) => {
     try {
         await SiteSettingService.deleteSiteSetting(req.params.siteSettingId)
-        return res.json({
-            statusCode: 200,
+        return res.status(200).json({
             success: true,
             message: 'Site Setting Deleted Successfully'
         })
@@ -106,14 +99,12 @@ exports.activeInactiveSiteSetting = async (req, res) => {
     try {
         await SiteSettingService.activeInactiveSiteSetting(req.body.isActive, req.params.siteSettingId)
         if (req.body.isActive == true) {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Site Setting Activated Successfully'
             })
         } else {
-            return res.json({
-                statusCode: 200,
+            return res.status(200).json({
                 success: true,
                 message: 'Site Setting Deactivated Successfully'
             })
