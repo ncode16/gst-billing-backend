@@ -3,14 +3,10 @@ const { pool } = require('../../config/database')
 module.exports = class BankService {
     static async createBank(cols) {
         try {
-            var query = ['INSERT INTO bank_master'];
-            var set = [];
-            Object.keys(cols).forEach(function (key, i) {
-                set.push(`(${key})` + ' VALUES ($' + (i + 1) + ')');
-            });
-            query.push(set.join(', '));
-            query.push('RETURNING *');
-            return query.join(' ');
+            let bank_key = Object.keys(cols)
+            let bank_value = Object.values(cols);
+            let query = `INSERT INTO bank_master (${bank_key.join(', ')}) VALUES (${bank_value.map((_, i) => `$${i+1}`).join(', ')}) RETURNING *`
+            return query
         } catch (error) {
             console.log('error', error)
             throw error

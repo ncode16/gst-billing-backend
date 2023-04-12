@@ -73,6 +73,35 @@ let storageInvoice = multer.diskStorage({
 })
 let uploadInvoice = multer({ storage: storageInvoice })
 
+let storageExpense = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/expense')
+    },
+    filename: (req, file, cb) => {
+        let fileType = ''
+        if (file.mimetype === "image/png") {
+            fileType = "png"
+        }
+        if (file.mimetype === "image/jpg") {
+            fileType = "jpg"
+        }
+        if (file.mimetype === "image/jpeg") {
+            fileType = "jpeg"
+        }
+        if (file.mimetype === "image/webp") {
+            fileType = "webp"
+        }
+        if (file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            fileType = "docx"
+        }
+        if (file.mimetype === "application/pdf") {
+            fileType = "pdf"
+        }
+        cb(null, Date.now() + "." + fileType)
+    }
+})
+let uploadExpense = multer({ storage: storageExpense })
+
 const tokencheck = require('../../middleware/tokencheck')
 
 const UserController = require('../controllers/frontend/UserController')
@@ -167,6 +196,7 @@ router.get('/edit/expense/:expenseId', tokencheck(), ExpenseController.editExpen
 router.post('/update/expense/:expenseId', tokencheck(), ExpenseController.updateExpense)
 router.post('/delete/expense/:expenseId', tokencheck(), ExpenseController.deleteExpense)
 router.post('/cancel/expense/:expenseId', tokencheck(), ExpenseController.cancelExpense)
+router.post('/search/expense', tokencheck(), ExpenseController.searchExpense)
 
 // Purchase API's
 router.post('/create/purchase', tokencheck(), PurchaseController.createPurchase)
